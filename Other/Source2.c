@@ -63,7 +63,6 @@ struct matr adjust(struct matr M) {
         res[i][j] = -res[i][j];
     }
   }
-
   return (struct matr) { n, m, res };
 }
 

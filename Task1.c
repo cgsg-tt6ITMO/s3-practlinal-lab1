@@ -73,10 +73,23 @@ int main() {
     m3 = matr3x3(a3),
     m4 = matr4x4(a4);
 
+  print(det(&m2));
+  print(det(&m3));
+  print(det(&m4));
+  printf("\n");
+
   // зашифровать три раза тремя путями
   cypher(m2, nums);
   cypher(m3, nums);
   cypher(m4, nums);
+
+  double** inv = invert(&m3);
+  for (size_t i = 0; i < 3; i++) {
+    for (size_t j = 0; j < 3; j++) {
+      printf("%f ", inv[i][j]);
+    }
+    printf("\n");
+  }
   getchar();
   return 0;
 }
