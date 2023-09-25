@@ -32,13 +32,8 @@ void cypher(struct square_matrix m, size_t* message) {
   for (size_t i = 0; i < num_of_vec; i++) {
     *(multipied + i) = matr_mul_vec(m, *(vectors + i));
   }
-  /*
-  for (size_t i = 0; i < num_of_vec; i++) {
-    print_vec((multipied + i));
-  }
-  getchar();
-  */
   // 3. декодировать полученный вектор
+  // 4. вывести результат
   char* res = (char*)malloc(vec_size * sizeof(char));
   for (size_t i = 0; i < num_of_vec; i++) {
     for (size_t j = 0; j < vec_size; j++) {
@@ -48,28 +43,18 @@ void cypher(struct square_matrix m, size_t* message) {
     }
   }
   printf("\n\n");
-  // 4. вывести результат
-  /*
-  for (size_t i = 0; i < vec_size; i++) {
-    printf("%c ", *(res + i));
-  }
-  */
-  //printf("\n");
 }
 
 int main() {
   system("chcp 1251");
   char secret[] = "великийаллах";
-    //"ўҐ¬­Ё«ЁЄ ¬­¬ ж­";
-    //"боглимонедин";
   size_t* nums = (size_t*) malloc(message_len * sizeof(size_t));
   for (size_t i = 0; i < message_len; i++) {
     nums[i] = get_number(secret[i]);
-    printf("%c", secret[i]);
+    //printf("%c", secret[i]);
   }
   printf("\n");
   struct vec secr = (struct vec){ 12, nums };
-  //print_vec(&secr);
 
   size_t a3[3][3] = {
     {1,0,0},

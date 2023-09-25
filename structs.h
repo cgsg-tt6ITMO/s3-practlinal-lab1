@@ -6,9 +6,8 @@
 
 #define message_len 12
 #define abc_len 30
-// 30 ασκβ
-extern char abc[];// = "ΰαβγδεζηθικλμνξοπρςστυφχψϋόύώÿ";//" ΅Ά£¤¥¦§¨ª«¬­®―ΰαγδεζηθιλμνξο";
-//extern size_t abc_len = 30L;// = sizeof(abc) / sizeof(abc[0]) - 1;
+
+extern char abc[];
 
 struct vec {
   size_t n;

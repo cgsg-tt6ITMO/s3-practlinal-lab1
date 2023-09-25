@@ -1,8 +1,6 @@
 #include "structs.h"
 
-char abc[] = "אבגדהוזחטיךכלםמןנסעףפץצקרûü‎‏ÿ";//
-//" ¡¢£¤¥¦§¨×«¬­®¯אבדהוזחטיכלםמן";
-//abc_len = (size_t)(sizeof(abc) / sizeof(abc[0]) - 1);
+char abc[] = "אבגדהוזחטיךכלםמןנסעףפץצקרûü‎‏ÿ";
 
 void print_vec(struct vec* v) {
   for (size_t i = 0; i < v->n; i++) {
