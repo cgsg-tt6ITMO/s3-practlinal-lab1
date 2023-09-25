@@ -16,14 +16,60 @@ size_t get_number(char letter) {
   return -1;
 }
 
-int main() {
-  char secret[] = "великийаллах";
-  size_t* nums = (size_t*) malloc(N * sizeof(size_t));
-  for (size_t i = 0; i < N; i++) {
-    nums[i] = get_number(secret[i]);
+void cypher(struct square_matrix m, size_t* message) {
+  // 1. разбить вектор на векторы нужной длины
+  size_t vec_size = m.n, num_of_vec = message_len / vec_size;
+  struct vec* vectors = (struct vec*) malloc(num_of_vec * sizeof(struct vec));
+  for (size_t i = 0; i < num_of_vec; i++) {
+    size_t* tmp = (size_t*) malloc(vec_size * sizeof(size_t));
+    for (size_t j = 0; j < vec_size; j++) {
+      tmp[j] = message[i * vec_size + j];
+    }
+    *(vectors + i) = (struct vec){vec_size, tmp};
   }
+  // 2. провести умножение
+  struct vec* multipied = (struct vec*)malloc(num_of_vec * sizeof(struct vec));
+  for (size_t i = 0; i < num_of_vec; i++) {
+    *(multipied + i) = matr_mul_vec(m, *(vectors + i));
+  }
+  /*
+  for (size_t i = 0; i < num_of_vec; i++) {
+    print_vec((multipied + i));
+  }
+  getchar();
+  */
+  // 3. декодировать полученный вектор
+  char* res = (char*)malloc(vec_size * sizeof(char));
+  for (size_t i = 0; i < num_of_vec; i++) {
+    for (size_t j = 0; j < vec_size; j++) {
+      struct vec veci = multipied[i];
+      *(res + i * vec_size + j) = get_letter((veci.v)[j]);
+      printf("%c", get_letter((veci.v)[j]));
+    }
+  }
+  printf("\n\n");
+  // 4. вывести результат
+  /*
+  for (size_t i = 0; i < vec_size; i++) {
+    printf("%c ", *(res + i));
+  }
+  */
+  //printf("\n");
+}
+
+int main() {
+  system("chcp 1251");
+  char secret[] = "великийаллах";
+    //"ўҐ¬­Ё«ЁЄ ¬­¬ ж­";
+    //"боглимонедин";
+  size_t* nums = (size_t*) malloc(message_len * sizeof(size_t));
+  for (size_t i = 0; i < message_len; i++) {
+    nums[i] = get_number(secret[i]);
+    printf("%c", secret[i]);
+  }
+  printf("\n");
   struct vec secr = (struct vec){ 12, nums };
-  print_vec(&secr);
+  //print_vec(&secr);
 
   size_t a3[3][3] = {
     {1,0,0},
@@ -42,18 +88,10 @@ int main() {
     m3 = matr3x3(a3),
     m4 = matr4x4(a4);
 
-  struct square_matrix
-    test1 = matr3x3((size_t[3][3]) {
-      {6, 24, 1},
-      {13, 16, 10},
-      {20, 17, 15}
-  });
-  struct vec
-    test2 = vec3((size_t[3]) {0, 2, 19});
-
-  struct vec res = matr_mul_vec(test1, test2);
-  printf("vec: \n");
-  print_vec(&res);
-
+  // зашифровать три раза тремя путями
+  cypher(m2, nums);
+  cypher(m3, nums);
+  cypher(m4, nums);
+  getchar();
   return 0;
 }

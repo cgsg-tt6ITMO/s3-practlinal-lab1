@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define N 12
+#define message_len 12
 #define abc_len 30
 // 30 ασκβ
 extern char abc[];// = "ΰαβγδεζηθικλμνξοπρςστυφχψϋόύώÿ";//" ΅Ά£¤¥¦§¨ª«¬­®―ΰαγδεζηθιλμνξο";
