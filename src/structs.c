@@ -72,14 +72,14 @@ struct square_matrix matr4x4(size_t arr[4][4]) {
   return (struct square_matrix) { n, res };
 }
 
-struct vec matr_mul_vec(struct square_matrix M, struct vec V) {
-  size_t n = V.n;
-  if (M.n != n) {
+struct vec matr_mul_vec(struct square_matrix *M, struct vec *V) {
+  size_t n = V->n;
+  if (M->n != n) {
     printf("ÝÒÓ ÌÀÒÐÈÖÓ È ÂÅÊÒÎÐ ÍÅËÜÇß ÏÅÐÅÌÍÎÆÀÒÜ\n");
-    printf("matr %zu vec %zu\n", M.n, n);
+    printf("matr %zu vec %zu\n", M->n, n);
     return (struct vec) { 0, NULL };
   }
-  size_t** m = M.arr, * v = V.v;
+  size_t** m = M->arr, * v = V->v;
   size_t* res = (size_t*)malloc(n * sizeof(size_t));
   for (size_t i = 0; i < n; i++) {
     res[i] = 0;

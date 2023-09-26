@@ -30,7 +30,7 @@ struct square_matrix matr2x2(size_t arr[2][2]);
 struct square_matrix matr3x3(size_t arr[3][3]);
 struct square_matrix matr4x4(size_t arr[4][4]);
 
-struct vec matr_mul_vec(struct square_matrix M, struct vec V);
+struct vec matr_mul_vec(struct square_matrix *M, struct vec *V);
 
 int64_t det(struct square_matrix* M);
 
