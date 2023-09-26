@@ -110,9 +110,9 @@ struct vec matr_mul_vec(struct square_matrix M, struct vec V) {
   for (size_t i = 0; i < n; i++) {
     res[i] = 0;
     for (size_t j = 0; j < n; j++) {
-      res[i] += (m[i][j] * v[j]) % abc_len;
+      res[i] += mod_abc_len((m[i][j] * v[j]));
     }
-    res[i] %= abc_len;
+    res[i] = mod_abc_len(res[i]);
   }
   return (struct vec) { n, res };
 }
@@ -202,15 +202,10 @@ int64_t inv_mod(int64_t a) {
 }
 
 struct square_matrix invert(struct square_matrix* M) {
-  //*
-  printf("\nstart:\n");
-  print_matr(M);
-  //*/
   size_t n = M->n;
   int64_t** res = (int64_t**)malloc(n * sizeof(int64_t*)), coef;
   for (size_t i = 0; i < n; i++)
     res[i] = (int64_t*)malloc(n * sizeof(int64_t));
-
   // adjusted
   for (size_t i = 0; i < n; i++) {
     for (size_t j = 0; j < n; j++) {
@@ -222,33 +217,19 @@ struct square_matrix invert(struct square_matrix* M) {
       res[i][j] = mod_abc_len(det(&minorr) * coef);
     }
   }
-  /*
-  printf("\nadjust:\n");
-  struct square_matrix a = (struct square_matrix){ n, res };
-  print_matr(&a);
-  */
-
   // transpose
   res = transpose(res, n);
-  /*
-  printf("\ntranspose:\n");
-  a = (struct square_matrix){ n, res };
-  print_matr(&a);
-  */
-
-  // multiply to 1/det
+  // multiply to inv to det
   int64_t determ = inv_mod(mod_abc_len(det(M)));
   if (determ == -1) {
     printf("ÌÀÒÐÈÖÀ ÍÅÎÁÐÀÒÈÌÀ\n");
     return (struct square_matrix) { 0, NULL };
   }
-
   for (size_t i = 0; i < n; i++) {
     for (size_t j = 0; j < n; j++) {
       res[i][j] = mod_abc_len(determ * res[i][j]);
     }
   }
-
   return (struct square_matrix) { n, res };
 }
 

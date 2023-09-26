@@ -21,6 +21,7 @@ struct square_matrix {
 };
 
 void print(size_t s);
+void print_int64_t(int64_t s);
 void print_vec(struct vec* v);
 void print_matr(struct square_matrix* M);
 void print_string(char* s);
@@ -42,6 +43,8 @@ size_t det3x3(struct square_matrix *M);
 size_t det4x4(struct square_matrix *M);
 */
 int64_t det(struct square_matrix* M);
+
+int64_t mod_abc_len(int64_t a);
 
 struct square_matrix invert(struct square_matrix *M);
 
