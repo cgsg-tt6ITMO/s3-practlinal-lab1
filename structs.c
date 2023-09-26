@@ -10,6 +10,13 @@ void print_int64_t(int64_t s) {
   printf("%" PRId64 " ", s);
 }
 
+void print_string(char* s) {
+  for (size_t i = 0; i < message_len; i++) {
+    printf("%c", *(s + i));
+  }
+  printf("\n\n");
+}
+
 void print_vec(struct vec* v) {
   for (size_t i = 0; i < v->n; i++) {
     printf("%zu ", *(v->v + i));
@@ -168,10 +175,10 @@ int64_t det(struct square_matrix* M) {
   return -1;
 }
 
-double** transpose(double** arr, size_t n) {
-  double** res = (double**)malloc(n * sizeof(double*));
+int64_t** transpose(int64_t** arr, size_t n) {
+  int64_t** res = (int64_t**)malloc(n * sizeof(int64_t*));
   for (size_t i = 0; i < n; i++)
-    res[i] = (double*)malloc(n * sizeof(double));
+    res[i] = (int64_t*)malloc(n * sizeof(int64_t));
   for (size_t i = 0; i < n; i++) {
     for (size_t j = 0; j < n; j++) {
       res[i][j] = arr[j][i];
@@ -180,36 +187,68 @@ double** transpose(double** arr, size_t n) {
   return res;
 }
 
-double** invert(struct square_matrix* M) {
-  size_t n = M->n;
-  double** res = (double**)malloc(n * sizeof(double*)), coef;
-  for (size_t i = 0; i < n; i++)
-    res[i] = (double*)malloc(n * sizeof(double));
+int64_t mod_abc_len(int64_t a) {
+  if (a >= 0) return a % abc_len;
+  while (a < 0) a += abc_len;
+  return a % abc_len;
+}
 
+int64_t inv_mod(int64_t a) {
+  for (size_t i = 0; i < abc_len; i++) {
+    if (mod_abc_len(a * i) == 1)
+      return i;
+  }
+  return -1;
+}
+
+struct square_matrix invert(struct square_matrix* M) {
+  //*
+  printf("\nstart:\n");
+  print_matr(M);
+  //*/
+  size_t n = M->n;
+  int64_t** res = (int64_t**)malloc(n * sizeof(int64_t*)), coef;
+  for (size_t i = 0; i < n; i++)
+    res[i] = (int64_t*)malloc(n * sizeof(int64_t));
+
+  // adjusted
   for (size_t i = 0; i < n; i++) {
     for (size_t j = 0; j < n; j++) {
       if (i % 2 != j % 2) {
-        coef = -1.0;
+        coef = -1;
       }
-      else coef = 1.0;
+      else coef = 1;
       struct square_matrix minorr = minor(M, i, j);
-      res[i][j] = det(&minorr) * coef;
+      res[i][j] = mod_abc_len(det(&minorr) * coef);
     }
   }
+  /*
+  printf("\nadjust:\n");
+  struct square_matrix a = (struct square_matrix){ n, res };
+  print_matr(&a);
+  */
+
   // transpose
   res = transpose(res, n);
+  /*
+  printf("\ntranspose:\n");
+  a = (struct square_matrix){ n, res };
+  print_matr(&a);
+  */
+
   // multiply to 1/det
-  double determ = (double)det(M);
-  if (determ == 0) {
+  int64_t determ = inv_mod(mod_abc_len(det(M)));
+  if (determ == -1) {
     printf("ÌÀÒÐÈÖÀ ÍÅÎÁÐÀÒÈÌÀ\n");
-    return NULL;
+    return (struct square_matrix) { 0, NULL };
   }
-  determ = 1.0 / determ;
+
   for (size_t i = 0; i < n; i++) {
     for (size_t j = 0; j < n; j++) {
-      res[i][j] = determ * (double)res[i][j];
+      res[i][j] = mod_abc_len(determ * res[i][j]);
     }
   }
-  return res;
+
+  return (struct square_matrix) { n, res };
 }
 
