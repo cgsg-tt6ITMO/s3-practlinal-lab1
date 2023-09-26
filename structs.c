@@ -103,6 +103,7 @@ struct vec matr_mul_vec(struct square_matrix M, struct vec V) {
   size_t n = V.n;
   if (M.n != n) {
     printf("щрс люрпхжс х бейрнп мекэгъ оепелмнфюрэ\n");
+    printf("matr %zu vec %zu\n", M.n, n);
     return (struct vec) { 0, NULL };
   }
   size_t** m = M.arr, * v = V.v;

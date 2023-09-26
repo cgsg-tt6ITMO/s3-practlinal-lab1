@@ -53,14 +53,11 @@ char* decypher(struct square_matrix *m, char* cyphr) {
   size_t* nums = (size_t*)malloc(message_len * sizeof(size_t));
   for (size_t i = 0; i < message_len; i++) {
     nums[i] = get_number(cyphr[i]);
-    print(nums[i]);
   }
-  printf("\nstart:::\n");
   // 1. найти матрицу, обратную к ключевой
   struct square_matrix inv = invert(m);
   // 2. разбить массив чисел в много маленьких
   // массив векторов шифра:
-  printf("разбивка\n");
   struct vec* cypher_vecs = (struct vec*)malloc(num_of_vec * sizeof(struct vec));
   for (size_t i = 0; i < num_of_vec; i++) {
     size_t* tmp = (size_t*)malloc(vec_size * sizeof(size_t));
@@ -68,15 +65,12 @@ char* decypher(struct square_matrix *m, char* cyphr) {
       tmp[j] = nums[i * vec_size + j];
     }
     cypher_vecs[i] = (struct vec){vec_size, tmp};
-    print_vec((cypher_vecs + i));
   }
-  printf("умноженные на обратную\n");
   // 3. умножить обратную матрицу на конечный вектор
   // массив векторов исходного сообщения
   struct vec* multipied = (struct vec*)malloc(num_of_vec * sizeof(struct vec));
   for (size_t i = 0; i < num_of_vec; i++) {
     *(multipied + i) = matr_mul_vec(inv, *(cypher_vecs + i));
-    print_vec((multipied + i));
   }
   // 4. декодировать полученный вектор
   char* res = (char*)malloc(vec_size * sizeof(char));
@@ -99,10 +93,10 @@ int main() {
     {7,8,11}
   };
   size_t a4[4][4] = {
-    {37, 0, 0, 0},
-    {3, 47, 0, 0},
-    {-1, 0, 57, 0},
-    {90, 21, 1, 7}
+    {7, 0, 0, 0},
+    {3, 11, 0, 0},
+    {-1, 0, 13, 0},
+    {8, 21, 1, 29}
   };
 
   struct square_matrix
@@ -111,17 +105,17 @@ int main() {
     m4 = matr4x4(a4);
 
   // зашифровать три раза тремя путями
-  //char* c2 = cypher(m2, secret);
-  //char* c3 = cypher(m3, secret);
+  char* c2 = cypher(m2, secret);
+  char* c3 = cypher(m3, secret);
   char* c4 = cypher(m4, secret);
 
-  //print_string(c2);
-  //print_string(c3);
-  //print_string(c4);
+  print_string(c2);
+  print_string(c3);
+  print_string(c4);
 
   printf("дешифровка:\n");
-  //print_string(decypher(&m2, c2));
-  //print_string(decypher(&m3, c3));
+  print_string(decypher(&m2, c2));
+  print_string(decypher(&m3, c3));
   print_string(decypher(&m4, c4));
 
   getchar();
