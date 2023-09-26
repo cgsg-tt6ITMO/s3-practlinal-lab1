@@ -1,5 +1,14 @@
 #include "headers/hill.h"
 
+size_t equal_vec(struct vec cyph, struct vec orig) {
+  if (cyph.n != orig.n) return 0;
+  for (size_t i = 0; i < cyph.n; i++) {
+    if (cyph.v[i] != orig.v[i]) return 0;
+    //printf("%zu %zu\n", cyph.v[i], orig.v[i]);
+  }
+  return 1;
+}
+
 struct square_matrix matr_gen() {
   struct square_matrix
     m = matr2x2((size_t[2][2]) {
@@ -8,16 +17,53 @@ struct square_matrix matr_gen() {
   return m;
 }
 
+struct square_matrix hack_key_dumb_edition(struct vec* cyph, struct vec* orig) {
+  size_t flag = 1;
+  for (size_t i1 = 0; i1 < abc_len; i1++) {
+    for (size_t i2 = 0; i2 < abc_len; i2++) {
+      for (size_t i3 = 0; i3 < abc_len; i3++) {
+        for (size_t i4 = 0; i4 < abc_len; i4++) {
+          flag = 1;
+          struct square_matrix mbres = matr2x2((size_t[2][2]) { {i1, i2}, { i3, i4 } });
+          for (size_t i5 = 0; i5 < message_len / 2; i5++) {
+            struct vec mul = matr_mul_vec(&mbres, (cyph + i5));
+            if (!equal_vec(mul, *(orig+i5))) flag = 0;
+          }
+          if (flag)
+            return mbres;
+        }
+      }
+    }
+  }
+  printf("NO RESULT\n");
+  return (struct square_matrix) { 0, NULL };
+}
+
 int main() {
+  system("chcp 1251");
+  size_t vec_size = 2;
   char* s1 = "недвенадцать",
     *s2 = "троицкаятома";
   struct square_matrix m = matr_gen();
   char* c1 = cypher(&m, s1),
     *c2 = cypher(&m, s2);
 
-  // 1. разбить на функции кодирование и декодирование
-  // 2. перевести в числа массивы c1, s1
-  // 3. разбить их на векторы длины 2
-  // 4. по шести уравнениям найти 4 числа обратной матрицы
-  // 5. дешифровать второе сообщение (нужна только обратная матрица)
+  struct vec* cyf1 = vectors(s1, vec_size, message_len / vec_size),
+    * decyf1 = vectors(c1, vec_size, message_len / vec_size);
+
+  struct square_matrix inv = hack_key_dumb_edition(decyf1, cyf1);
+  print_matr(&inv);
+  print_string(cypher(&inv, c2));
+  /*
+  double inv[2][2];
+  inv[0][0] = (
+    (double)(cyf1[0]).v[0] / (decyf1[0]).v[1] + (double)(cyf1[1]).v[0] / (decyf1[1]).v[1]
+    ) / (
+      (double)(decyf1[0]).v[0] / (decyf1[0]).v[1] + (double)(decyf1[1]).v[0] / (decyf1[1]).v[1]
+      );
+      */
+  //printf("%f\n", inv[0][0]);
+  // 1. по шести уравнениям найти 4 числа обратной матрицы
+  // 2. дешифровать второе сообщение (нужна только обратная матрица)
+  return 0;
 }
