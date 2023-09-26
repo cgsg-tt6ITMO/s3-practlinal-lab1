@@ -33,33 +33,6 @@ void print_matr(struct square_matrix* M) {
   printf("\n");
 }
 
-struct vec vec2(size_t v[2]) {
-  size_t n = 2;
-  size_t* res = (size_t*)malloc(n * sizeof(size_t));
-  for (size_t i = 0; i < n; i++) {
-    res[i] = v[i];
-  }
-  return (struct vec) { n, res };
-}
-
-struct vec vec3(size_t v[3]) {
-  size_t n = 3;
-  size_t* res = (size_t*)malloc(n * sizeof(size_t));
-  for (size_t i = 0; i < n; i++) {
-    res[i] = v[i];
-  }
-  return (struct vec) { n, res };
-}
-
-struct vec vec4(size_t v[4]) {
-  size_t n = 4;
-  size_t* res = (size_t*)malloc(n * sizeof(size_t));
-  for (size_t i = 0; i < n; i++) {
-    res[i] = v[i];
-  }
-  return (struct vec) { n, res };
-}
-
 struct square_matrix matr2x2(size_t arr[2][2]) {
   size_t n = 2;
   size_t** res = (size_t**)malloc(n * sizeof(size_t*));

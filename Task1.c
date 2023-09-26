@@ -83,6 +83,14 @@ char* decypher(struct square_matrix *m, char* cyphr) {
   return res;
 }
 
+char* tree_typos(char* message) {
+  size_t i1 = rand() % message_len, i2 = rand() % (message_len - i1 - 1), i3 = i2 + rand() % (message_len - i2);
+  *(message + i1) = get_letter(rand() % abc_len);
+  *(message + i2) = get_letter(rand() % abc_len);
+  *(message + i3) = get_letter(rand() % abc_len);
+  return message;
+}
+
 int main() {
   system("chcp 1251");
   char* secret = "великийаллах";
@@ -100,14 +108,14 @@ int main() {
   };
 
   struct square_matrix
-    m2 = matr2x2((size_t[2][2]) { {239, 0}, {50, 1} }),
+    m2 = matr2x2((size_t[2][2]) { {29, 0}, {20, 1} }),
     m3 = matr3x3(a3),
     m4 = matr4x4(a4);
 
   // зашифровать три раза тремя путями
-  char* c2 = cypher(m2, secret);
-  char* c3 = cypher(m3, secret);
-  char* c4 = cypher(m4, secret);
+  char* c2 = tree_typos(cypher(m2, secret));
+  char* c3 = tree_typos(cypher(m3, secret));
+  char* c4 = tree_typos(cypher(m4, secret));
 
   print_string(c2);
   print_string(c3);
@@ -118,6 +126,5 @@ int main() {
   print_string(decypher(&m3, c3));
   print_string(decypher(&m4, c4));
 
-  getchar();
   return 0;
 }
