@@ -47,50 +47,46 @@ char* cypher(struct square_matrix m, char* s) {
   return res;
 }
 
-//char*
-void decypher(struct square_matrix *m, char* cyphr) {
-  size_t vect_len = m->n, num_vect = message_len / vect_len;
+char* decypher(struct square_matrix *m, char* cyphr) {
+  size_t vec_size = m->n, num_of_vec = message_len / vec_size;
   // 0. сделать из сообщения массив чисел
-  int64_t* nums = (int64_t*)malloc(message_len * sizeof(int64_t));
+  size_t* nums = (size_t*)malloc(message_len * sizeof(size_t));
   for (size_t i = 0; i < message_len; i++) {
-    nums[i] = (int64_t)get_number(cyphr[i]);
+    nums[i] = get_number(cyphr[i]);
+    print(nums[i]);
   }
+  printf("\nstart:::\n");
   // 1. найти матрицу, обратную к ключевой
   struct square_matrix inv = invert(m);
   // 2. разбить массив чисел в много маленьких
-  // массив векторов шифра
-  int64_t** cypher_vecs = (int64_t**)malloc(num_vect * sizeof(int64_t*));
-  for (size_t i = 0; i < num_vect; i++)
-    cypher_vecs[i] = (int64_t*)malloc(vect_len * sizeof(int64_t));
-  for (size_t i = 0; i < num_vect; i++) {
-    for (size_t j = 0; j < vect_len; j++) {
-      *(*(cypher_vecs + i)+j) = nums[i * vect_len + j];
+  // массив векторов шифра:
+  printf("разбивка\n");
+  struct vec* cypher_vecs = (struct vec*)malloc(num_of_vec * sizeof(struct vec));
+  for (size_t i = 0; i < num_of_vec; i++) {
+    size_t* tmp = (size_t*)malloc(vec_size * sizeof(size_t));
+    for (size_t j = 0; j < vec_size; j++) {
+      tmp[j] = nums[i * vec_size + j];
     }
+    cypher_vecs[i] = (struct vec){vec_size, tmp};
+    print_vec((cypher_vecs + i));
   }
+  printf("умноженные на обратную\n");
   // 3. умножить обратную матрицу на конечный вектор
   // массив векторов исходного сообщения
-  int64_t** res = (int64_t**)malloc(num_vect * sizeof(int64_t*));
-  for (size_t i = 0; i < num_vect; i++)
-    res[i] = (int64_t*)malloc(vect_len * sizeof(int64_t));
-
-  for (size_t k = 0; k < num_vect; k++) {
-
-    for (size_t i = 0; i < vect_len; i++) {
-      res[k][i] = 0;
-      for (size_t j = 0; j < vect_len; j++) {
-        res[k][i] += mod_abc_len(inv.arr[i][j] * cypher_vecs[k][j]);
-      }
-      res[k][i] = mod_abc_len(res[k][i]);
-      //print(res[k][i]);
+  struct vec* multipied = (struct vec*)malloc(num_of_vec * sizeof(struct vec));
+  for (size_t i = 0; i < num_of_vec; i++) {
+    *(multipied + i) = matr_mul_vec(inv, *(cypher_vecs + i));
+    print_vec((multipied + i));
+  }
+  // 4. декодировать полученный вектор
+  char* res = (char*)malloc(vec_size * sizeof(char));
+  for (size_t i = 0; i < num_of_vec; i++) {
+    for (size_t j = 0; j < vec_size; j++) {
+      struct vec veci = multipied[i];
+      *(res + i * vec_size + j) = get_letter((veci.v)[j]);
     }
   }
-  char* decyph = (char *) malloc(message_len * sizeof(char));
-  // 4. полученный вектор перевести в буквы
-  for (size_t k = 0; k < num_vect; k++) {
-    for (size_t i = 0; i < vect_len; i++) {
-      printf("%c", (get_letter((size_t)res[k][i])));
-    }
-  }
+  return res;
 }
 
 int main() {
@@ -115,16 +111,18 @@ int main() {
     m4 = matr4x4(a4);
 
   // зашифровать три раза тремя путями
-  char* c2 = cypher(m2, secret);
-  char* c3 = cypher(m3, secret);
+  //char* c2 = cypher(m2, secret);
+  //char* c3 = cypher(m3, secret);
   char* c4 = cypher(m4, secret);
 
-  print_string(c2);
-  print_string(c3);
-  print_string(c4);
+  //print_string(c2);
+  //print_string(c3);
+  //print_string(c4);
 
   printf("дешифровка:\n");
-  decypher(&m3, c3);
+  //print_string(decypher(&m2, c2));
+  //print_string(decypher(&m3, c3));
+  print_string(decypher(&m4, c4));
 
   getchar();
   return 0;

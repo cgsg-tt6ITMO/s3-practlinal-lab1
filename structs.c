@@ -168,6 +168,7 @@ int64_t det4x4(struct square_matrix* M) {
 }
 
 int64_t det(struct square_matrix* M) {
+  if (M->n == 1) return (M->arr)[0][0];
   if (M->n == 2) return det2x2(M);
   if (M->n == 3) return det3x3(M);
   if (M->n == 4) return det4x4(M);
