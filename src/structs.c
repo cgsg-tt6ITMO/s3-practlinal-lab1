@@ -1,4 +1,4 @@
-#include "structs.h"
+#include "headers/structs.h"
 
 char abc[] = "אבגדהוזחטיךכלםמןנסעףפץצקרûü‎‏ÿ";
 

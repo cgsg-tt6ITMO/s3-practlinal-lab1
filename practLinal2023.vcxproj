@@ -127,13 +127,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Task1.c" />
-    <ClCompile Include="structs.c" />
-    <ClCompile Include="Task2.c" />
+    <ClCompile Include="src\structs.c" />
+    <ClCompile Include="src\Task1.c" />
+    <ClCompile Include="src\Task2.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="hill.h" />
-    <ClInclude Include="structs.h" />
+    <ClInclude Include="src\headers\hill.h" />
+    <ClInclude Include="src\headers\structs.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

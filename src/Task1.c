@@ -1,4 +1,4 @@
-#include "structs.h"
+#include "headers/structs.h"
 
 char get_letter(size_t s) {
   if (s >= 0 && s < abc_len)

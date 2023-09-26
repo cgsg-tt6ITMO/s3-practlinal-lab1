@@ -1,4 +1,4 @@
-#include "hill.h"
+#include "headers/hill.h"
 
 struct square_matrix matr_gen() {
   struct square_matrix
@@ -11,7 +11,7 @@ struct square_matrix matr_gen() {
 int main() {
   char* s1 = "недвенадцать",
     *s2 = "троицкаятома";
-  struct square_matrix m = matr_gen(m);
+  struct square_matrix m = matr_gen();
   char* c1 = cypher(m, s1),
     *c2 = cypher(m, s2);
 
