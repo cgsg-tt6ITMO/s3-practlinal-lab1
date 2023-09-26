@@ -91,7 +91,7 @@ char* tree_typos(char* message) {
   return message;
 }
 
-int main() {
+int main1() {
   system("chcp 1251");
   char* secret = "великийаллах";
 
@@ -113,18 +113,22 @@ int main() {
     m4 = matr4x4(a4);
 
   // зашифровать три раза тремя путями
-  char* c2 = tree_typos(cypher(m2, secret));
-  char* c3 = tree_typos(cypher(m3, secret));
-  char* c4 = tree_typos(cypher(m4, secret));
+  char* c2 = cypher(m2, secret);
+  char* c3 = cypher(m3, secret);
+  char* c4 = cypher(m4, secret);
+
+  char* t2 = tree_typos(c2);
+  char* t3 = tree_typos(c3);
+  char* t4 = tree_typos(c4);
 
   print_string(c2);
   print_string(c3);
   print_string(c4);
 
   printf("дешифровка:\n");
-  print_string(decypher(&m2, c2));
-  print_string(decypher(&m3, c3));
-  print_string(decypher(&m4, c4));
+  print_string(decypher(&m2, t2));
+  print_string(decypher(&m3, t3));
+  print_string(decypher(&m4, t4));
 
   return 0;
 }
