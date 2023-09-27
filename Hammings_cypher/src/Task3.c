@@ -142,17 +142,14 @@ struct matrix transpose(struct matrix m) {
 }
 
 size_t* typo(size_t* message) {
-  size_t message_len = 20;
+  size_t message_len = 35;
   size_t i1 = rand() % message_len;
-  *(message + i1) = (message[i1] + 1) % 2;
+  message[i1] = (message[i1] + 1) % 2;
   return message;
 }
 
-int main() {
-  system("chcp 1251");
-  abc_init();
+size_t* encoding(char* word) {
   size_t mes_len = 4;
-  char* word = "тома";
   // массив из чисел
   size_t* nums = (size_t*)malloc(sizeof(size_t) * mes_len * code_len);
   for (size_t i = 0; i < mes_len; i++) {
@@ -199,19 +196,22 @@ int main() {
       encoded[i * 7 + j] = (multiplied[i]).v[j];
     }
   }
+  return encoded;
+}
+
+int main() {
+  system("chcp 1251");
+  abc_init();
+  char* word = "тома";
+  size_t* encoded = encoding(word);
+
   print_str(encoded, 35);
   printf("\n");
-  size_t typo_ind = rand() % 35;
-  encoded[typo_ind] = (encoded[typo_ind] + 1) % 2;
-  typo_ind = rand() % 35;
-  encoded[typo_ind] = (encoded[typo_ind] + 1) % 2;
-  typo_ind = rand() % 35;
-  encoded[typo_ind] = (encoded[typo_ind] + 1) % 2;
-  typo_ind = rand() % 35;
-  encoded[typo_ind] = (encoded[typo_ind] + 1) % 2;
+  encoded = typo(typo(typo(typo(encoded))));
+
   print_str(encoded, 35);
   printf("\n");
-  // раскодирование
+  // проверка кодов
   size_t matr_H[3][7] = {
     {1, 0, 1, 0, 1, 0, 1},
     {0, 1, 1, 0, 0, 1, 1},
@@ -229,14 +229,16 @@ int main() {
 
   // если умножить проверочную матрицу на векторы, должны в идеале получиться все нули
   struct vec* decipher = (struct vec*)malloc(5 * sizeof(struct vec));
-
+  // надо сначала разбить encoded на векторы длины 7
+  /*
   for (size_t i = 0; i < 5; i++) {
     *(decipher + i) = nonsquare_matr_mul_vec(&H, multiplied + i);
   }
-
+  */
+  /*
   for (size_t i = 0; i < 5; i++) {
     print_vec(&decipher[i]);
   }
-
+  */
   return 0;
 }
