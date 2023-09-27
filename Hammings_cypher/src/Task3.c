@@ -141,23 +141,28 @@ struct matrix transpose(struct matrix m) {
   return (struct matrix) { m.m, m.n, res };
 }
 
+size_t* typo(size_t* message) {
+  size_t message_len = 20;
+  size_t i1 = rand() % message_len;
+  *(message + i1) = (message[i1] + 1) % 2;
+  return message;
+}
+
 int main() {
   system("chcp 1251");
   abc_init();
   size_t mes_len = 4;
   char* word = "тома";
+  // массив из чисел
   size_t* nums = (size_t*)malloc(sizeof(size_t) * mes_len * code_len);
-
   for (size_t i = 0; i < mes_len; i++) {
     size_t* tmp = get_letter_code(word[i]);
     for (size_t j = 0; j < code_len; j++) {
       nums[code_len * i + j] = tmp[j];
     }
   }
-
+  // разбиваем на вектора длины 4
   struct vec* orig_vecs = vecs(nums, 4, 5);
-  // и потом их всех перемножаем, но нужна отдельная функция для такого умножения
-
   size_t matr_G[7][4] = {
     {1, 1, 0, 1},
     {1, 0, 1, 1},
@@ -167,7 +172,6 @@ int main() {
     {0, 0, 1, 0},
     {0, 0, 0, 1}
   };
-
   size_t** G = (size_t**)malloc(7 * sizeof(size_t*));
   for (size_t i = 0; i < 7; i++)
     G[i] = (size_t*)malloc(4 * sizeof(size_t));
@@ -177,6 +181,7 @@ int main() {
     }
   }
   struct matrix key = (struct matrix){ 7, 4, G };
+  // умножаем матрицу на вектора и получаем вектора длины 7
   struct vec* multiplied = (struct vec*)malloc(5 * sizeof(struct vec));
   for (size_t i = 0; i < 5; i++) {
     *(multiplied + i) = nonsquare_matr_mul_vec(&key, orig_vecs + i);
@@ -187,12 +192,31 @@ int main() {
     print_vec(&multiplied[i]);
   }
   printf("\n");
+  // склеить в один массив
+  size_t* encoded = (size_t*)malloc(35 * sizeof(size_t));
+  for (size_t i = 0; i < 5; i++) {
+    for (size_t j = 0; j < 7; j++) {
+      encoded[i * 7 + j] = (multiplied[i]).v[j];
+    }
+  }
+  print_str(encoded, 35);
+  printf("\n");
+  size_t typo_ind = rand() % 35;
+  encoded[typo_ind] = (encoded[typo_ind] + 1) % 2;
+  typo_ind = rand() % 35;
+  encoded[typo_ind] = (encoded[typo_ind] + 1) % 2;
+  typo_ind = rand() % 35;
+  encoded[typo_ind] = (encoded[typo_ind] + 1) % 2;
+  typo_ind = rand() % 35;
+  encoded[typo_ind] = (encoded[typo_ind] + 1) % 2;
+  print_str(encoded, 35);
+  printf("\n");
+  // раскодирование
   size_t matr_H[3][7] = {
     {1, 0, 1, 0, 1, 0, 1},
     {0, 1, 1, 0, 0, 1, 1},
     {0, 0, 0, 1, 1, 1, 1}
   };
-
   size_t** h = (size_t**)malloc(3 * sizeof(size_t*));
   for (size_t i = 0; i < 3; i++)
     h[i] = (size_t*)malloc(7 * sizeof(size_t));
@@ -201,19 +225,18 @@ int main() {
       h[i][j] = matr_H[i][j];
     }
   }
-
   struct matrix H = (struct matrix){ 3, 7, h };
 
+  // если умножить проверочную матрицу на векторы, должны в идеале получиться все нули
   struct vec* decipher = (struct vec*)malloc(5 * sizeof(struct vec));
 
   for (size_t i = 0; i < 5; i++) {
     *(decipher + i) = nonsquare_matr_mul_vec(&H, multiplied + i);
-    print_vec(&decipher[i]);
   }
-  /*
+
   for (size_t i = 0; i < 5; i++) {
     print_vec(&decipher[i]);
   }
-  */
+
   return 0;
 }
