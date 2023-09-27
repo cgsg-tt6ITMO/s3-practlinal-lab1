@@ -1,17 +1,7 @@
 
-*.pdb
-*.idb
-*.obj
 *.vsidx
 *.ipch
 *.db
 *.db-shm
-.vs/practLinal2023/v17/.suo
 *.db-wal
 *.opendb
-*.tlog
-*.enc
-*.recipe
-*.ilk
-*.log
-x64/Debug/practLinal2023.vcxproj.FileListAbsolute.txt
