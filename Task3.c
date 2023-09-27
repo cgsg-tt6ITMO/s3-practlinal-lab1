@@ -6,8 +6,8 @@
 
 struct map* abc;
 
-void print_str(size_t* s) {
-  for (size_t i = 0; i < 20; i++) {
+void print_str(size_t* s, size_t n) {
+  for (size_t i = 0; i < n; i++) {
     printf("%zu", *(s + i));
   }
   printf(" ");
@@ -92,9 +92,38 @@ int main() {
   for (size_t i = 0; i < message_len; i++) {
     size_t* tmp = get_letter_code(word[i]);
     for (size_t j = 0; j < code_len; j++) {
-      *(nums + code_len * i + j) = tmp[j];
+      nums[code_len * i + j] = tmp[j];
     }
   }
-  print_str(nums);
+
+  size_t* result = (size_t*)malloc(25 * sizeof(size_t));
+  // индексы
+  size_t p1 = 1, p2 = 2, p3 = 4, p4 = 8, p5 = 16;
+  p1--;
+  p2--;
+  p3--;
+  p4--;
+  p5--;
+  size_t s1, s2, s3, s4, s5;
+  size_t cnt = 0;
+  for (size_t i = 0; i < 25; i++) {
+    if (i != p1 && i != p2 && i != p3 && i != p4 && i != p5) {
+      result[i] = nums[cnt++];
+    }
+  }
+
+  // посчитать p
+
+  s1 = (nums[0] + nums[1] + nums[3] + nums[4] + nums[6] + nums[8] +
+    nums[10] + nums[11] + nums[13] + nums[15] + nums[17] + nums[19]) % 2;
+  s2 = (nums[0] + nums[2] + nums[3] + nums[5] + nums[6] + nums[9] +
+    nums[10] + nums[12] + nums[13] + nums[16] + nums[17]) % 2;
+  s3 = (nums[1] + nums[2] + nums[3] + nums[7] + nums[8] + nums[9] +
+    nums[10] + nums[14] + nums[15] + nums[16] + nums[17]) % 2;
+  s4 = (nums[4] + nums[5] + nums[6] + nums[7] + nums[8] + nums[9] +
+    nums[10] + nums[18] + nums[19]) % 2;
+  s5 = (nums[11] + nums[12] + nums[13] + nums[14] + nums[15] + nums[16] + 
+    nums[17] + nums[18] + nums[19]) % 2;
+ 
   return 0;
 }
