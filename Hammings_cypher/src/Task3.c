@@ -32,7 +32,7 @@ void print_vec(struct vec* v) {
 
 // m 7x4, v 4
 struct vec nonsquare_matr_mul_vec(struct matrix* M, struct vec* V) {
-  size_t res_n = 7;
+  size_t res_n = M->n;
   size_t* res = (size_t*)malloc(res_n * sizeof(size_t));
 
   // n = 4
@@ -186,6 +186,34 @@ int main() {
     print_vec(&orig_vecs[i]);
     print_vec(&multiplied[i]);
   }
+  printf("\n");
+  size_t matr_H[3][7] = {
+    {1, 0, 1, 0, 1, 0, 1},
+    {0, 1, 1, 0, 0, 1, 1},
+    {0, 0, 0, 1, 1, 1, 1}
+  };
 
+  size_t** h = (size_t**)malloc(3 * sizeof(size_t*));
+  for (size_t i = 0; i < 3; i++)
+    h[i] = (size_t*)malloc(7 * sizeof(size_t));
+  for (size_t i = 0; i < 3; i++) {
+    for (size_t j = 0; j < 7; j++) {
+      h[i][j] = matr_H[i][j];
+    }
+  }
+
+  struct matrix H = (struct matrix){ 3, 7, h };
+
+  struct vec* decipher = (struct vec*)malloc(5 * sizeof(struct vec));
+
+  for (size_t i = 0; i < 5; i++) {
+    *(decipher + i) = nonsquare_matr_mul_vec(&H, multiplied + i);
+    print_vec(&decipher[i]);
+  }
+  /*
+  for (size_t i = 0; i < 5; i++) {
+    print_vec(&decipher[i]);
+  }
+  */
   return 0;
 }
