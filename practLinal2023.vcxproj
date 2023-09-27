@@ -130,6 +130,7 @@
     <ClCompile Include="src\structs.c" />
     <ClCompile Include="src\Task1.c" />
     <ClCompile Include="src\Task2.c" />
+    <ClCompile Include="Task3.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\headers\hill.h" />

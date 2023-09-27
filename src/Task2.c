@@ -4,7 +4,6 @@ size_t equal_vec(struct vec cyph, struct vec orig) {
   if (cyph.n != orig.n) return 0;
   for (size_t i = 0; i < cyph.n; i++) {
     if (cyph.v[i] != orig.v[i]) return 0;
-    //printf("%zu %zu\n", cyph.v[i], orig.v[i]);
   }
   return 1;
 }
@@ -27,7 +26,7 @@ struct square_matrix hack_key_dumb_edition(struct vec* cyph, struct vec* orig) {
           struct square_matrix mbres = matr2x2((size_t[2][2]) { {i1, i2}, { i3, i4 } });
           for (size_t i5 = 0; i5 < message_len / 2; i5++) {
             struct vec mul = matr_mul_vec(&mbres, (cyph + i5));
-            if (!equal_vec(mul, *(orig+i5))) flag = 0;
+            if (!equal_vec(mul, *(orig + i5))) flag = 0;
           }
           if (flag)
             return mbres;
@@ -39,7 +38,7 @@ struct square_matrix hack_key_dumb_edition(struct vec* cyph, struct vec* orig) {
   return (struct square_matrix) { 0, NULL };
 }
 
-int main() {
+int main2() {
   system("chcp 1251");
   size_t vec_size = 2;
   char* s1 = "недвенадцать",
@@ -54,16 +53,5 @@ int main() {
   struct square_matrix inv = hack_key_dumb_edition(decyf1, cyf1);
   print_matr(&inv);
   print_string(cypher(&inv, c2));
-  /*
-  double inv[2][2];
-  inv[0][0] = (
-    (double)(cyf1[0]).v[0] / (decyf1[0]).v[1] + (double)(cyf1[1]).v[0] / (decyf1[1]).v[1]
-    ) / (
-      (double)(decyf1[0]).v[0] / (decyf1[0]).v[1] + (double)(decyf1[1]).v[0] / (decyf1[1]).v[1]
-      );
-      */
-  //printf("%f\n", inv[0][0]);
-  // 1. по шести уравнениям найти 4 числа обратной матрицы
-  // 2. дешифровать второе сообщение (нужна только обратная матрица)
   return 0;
 }
