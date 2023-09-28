@@ -118,6 +118,22 @@ size_t* get_letter_code(char letter) {
   return NULL;
 }
 
+size_t equals(size_t* a, size_t* b) {
+  for (size_t i = 0; i < 5; i++) {
+    if (a[i] != b[i]) return 0;
+  }
+  return 1;
+}
+
+char get_letter(size_t* code) {
+  for (size_t i = 0; i < abc_size; i++) {
+    if (equals(code, abc[i].code))
+      return abc[i].letter;
+  }
+  printf("ÒÀÊÎÉ ÁÓÊÂÛ ÍÅÒ\n");
+  return 0;
+}
+
 struct vec* vecs(size_t* s, size_t vec_size, size_t num_of_vec) {
   struct vec* vectors = (struct vec*)malloc(num_of_vec * sizeof(struct vec));
   for (size_t i = 0; i < num_of_vec; i++) {
@@ -131,11 +147,11 @@ struct vec* vecs(size_t* s, size_t vec_size, size_t num_of_vec) {
 }
 
 struct matrix transpose(struct matrix m) {
-  size_t** res = (size_t**)malloc(m.n * sizeof(size_t*));
-  for (size_t i = 0; i < m.m; i++)
-    res[i] = (size_t*)malloc(m.m * sizeof(size_t));
-  for (size_t i = 0; i < m.n; i++) {
-    for (size_t j = 0; j < m.m; j++) {
+  size_t** res = (size_t**)malloc(m.m * sizeof(size_t*));
+  for (size_t i = 0; i < m.n; i++)
+    res[i] = (size_t*)malloc(m.n * sizeof(size_t));
+  for (size_t i = 0; i < m.m; i++) {
+    for (size_t j = 0; j < m.n; j++) {
       res[i][j] = m.arr[j][i];
     }
   }
@@ -200,6 +216,67 @@ size_t* encoding(char* word) {
     }
   }
   return encoded;
+
+}
+
+char* decode(struct vec* v) {
+
+  size_t multiplied[5][4];
+  for (size_t i = 0; i < 5; i++) {
+    multiplied[i][0] = v[i].v[2];
+    multiplied[i][1] = v[i].v[4];
+    multiplied[i][2] = v[i].v[5];
+    multiplied[i][3] = v[i].v[6];
+  }
+
+  size_t* encoded = (size_t*)malloc(20 * sizeof(size_t));
+  for (size_t i = 0; i < 5; i++) {
+    for (size_t j = 0; j < 4; j++) {
+      encoded[i * 4 + j] = multiplied[i][j];
+    }
+  }
+  //
+  for (size_t i = 0; i < 4; i++) {
+    for (size_t j = 0; j < 5; j++) {
+      encoded[i * 5 + j];
+    }
+  }
+  // ðàçáèòü íà 4 áóêâû
+  char* res = (char*)malloc(4 * sizeof(char));
+  for (size_t i = 0; i < 4; i++) {
+    size_t* tmp = (size_t*)malloc(5 * sizeof(size_t));
+    for (size_t j = 0; j < 5; j++) {
+      tmp[j] = encoded[i * 5 + j];
+    }
+    res[i] = get_letter(tmp);
+  }
+  return res;
+}
+
+size_t number(size_t* binary) {
+  if (binary[0] == 0 && binary[1] == 0 && binary[2] == 0)
+    return 0;
+  if (binary[0] == 1 && binary[1] == 1 && binary[2] == 1)
+    return 7;
+  if (binary[0] == 0 && binary[1] == 1 && binary[2] == 1)
+    return 6;
+  if (binary[0] == 1 && binary[1] == 0 && binary[2] == 1)
+    return 5;
+  if (binary[0] == 0 && binary[1] == 0 && binary[2] == 1)
+    return 4;
+  if (binary[0] == 1 && binary[1] == 1 && binary[2] == 0)
+    return 3;
+  if (binary[0] == 0 && binary[1] == 1 && binary[2] == 0)
+    return 2;
+  if (binary[0] == 1 && binary[1] == 0 && binary[2] == 0)
+    return 1;
+}
+
+void print_string(char* s) {
+  for (size_t i = 0; i < 4; i++) {
+    printf("%c", *(s + i));
+  }
+  printf("\n\n");
 }
 
 int main() {
@@ -246,11 +323,20 @@ int main() {
   for (size_t i = 0; i < 5; i++) {
     *(decipher + i) = nonsquare_matr_mul_vec(&H, vectors + i);
   }
-  
-  
+
+
   for (size_t i = 0; i < 5; i++) {
+    size_t typo = number(decipher[i].v);
     print_vec(&decipher[i]);
+    if (typo != 0) {
+      vectors[i].v[typo - 1] += 1;
+      vectors[i].v[typo - 1] %= 2;
+      //printf("typo: %zu\n", typo - 1);
+    }
   }
-  
+
+  print_string(
+    decode(vectors));
+
   return 0;
 }
