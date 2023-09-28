@@ -127,7 +127,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\structs.c" />
     <ClCompile Include="src\Task3.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\headers\structs.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

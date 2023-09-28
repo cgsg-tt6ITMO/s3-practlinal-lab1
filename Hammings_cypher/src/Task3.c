@@ -1,75 +1,6 @@
-#include <stdio.h>
-#include <stdlib.h> // malloc
-#include <time.h>
-
-#define abc_size 32
-#define code_len 5
+#include "headers/structs.h"
 
 struct map* abc;
-
-void print_str(size_t* s, size_t n) {
-  for (size_t i = 0; i < n; i++) {
-    printf("%zu", *(s + i));
-  }
-  printf(" ");
-}
-
-struct matrix {
-  size_t n, m;
-  size_t** arr;
-};
-
-struct vec {
-  size_t n;
-  size_t* v;
-};
-
-void print_vec(struct vec* v) {
-  for (size_t i = 0; i < v->n; i++) {
-    printf("%zu ", *(v->v + i));
-  }
-  printf("\n");
-}
-
-// m 7x4, v 4
-struct vec nonsquare_matr_mul_vec(struct matrix* M, struct vec* V) {
-  size_t res_n = M->n;
-  size_t* res = (size_t*)malloc(res_n * sizeof(size_t));
-
-  // n = 4
-  size_t n = V->n;
-  if (M->m != n) {
-    printf("ÝÒÓ ÌÀÒÐÈÖÓ È ÂÅÊÒÎÐ ÍÅËÜÇß ÏÅÐÅÌÍÎÆÀÒÜ\n");
-    printf("matr %zu vec %zu\n", M->m, n);
-    return (struct vec) { 0, NULL };
-  }
-  size_t** m = M->arr, * v = V->v;
-  for (size_t i = 0; i < res_n; i++) {
-    res[i] = 0;
-    for (size_t j = 0; j < n; j++) {
-      res[i] += (m[i][j] * v[j]);
-    }
-    res[i] = (res[i]) % 2;
-  }
-  return (struct vec) { res_n, res };
-}
-
-struct map {
-  size_t* code;
-  char letter;
-};
-
-struct map map(char* c, char letter) {
-  size_t* code = (size_t*)malloc(sizeof(size_t) * code_len);
-  for (size_t i = 0; i < code_len; i++) {
-    if (c[i] == '0') {
-      code[i] = 0;
-    }
-    else if (c[i] == '1')
-      code[i] = 1;
-  }
-  return (struct map) { code, letter };
-}
 
 void abc_init(void) {
   abc = (struct map*)malloc(abc_size * sizeof(struct map));
@@ -118,13 +49,6 @@ size_t* get_letter_code(char letter) {
   return NULL;
 }
 
-size_t equals(size_t* a, size_t* b) {
-  for (size_t i = 0; i < 5; i++) {
-    if (a[i] != b[i]) return 0;
-  }
-  return 1;
-}
-
 char get_letter(size_t* code) {
   for (size_t i = 0; i < abc_size; i++) {
     if (equals(code, abc[i].code))
@@ -146,20 +70,7 @@ struct vec* vecs(size_t* s, size_t vec_size, size_t num_of_vec) {
   return vectors;
 }
 
-struct matrix transpose(struct matrix m) {
-  size_t** res = (size_t**)malloc(m.m * sizeof(size_t*));
-  for (size_t i = 0; i < m.n; i++)
-    res[i] = (size_t*)malloc(m.n * sizeof(size_t));
-  for (size_t i = 0; i < m.m; i++) {
-    for (size_t j = 0; j < m.n; j++) {
-      res[i][j] = m.arr[j][i];
-    }
-  }
-  return (struct matrix) { m.m, m.n, res };
-}
-
 size_t* typo(size_t* message) {
-  srand(clock());
   size_t message_len = 35;
   size_t i1 = rand() % message_len;
   printf("typo index: %zu\n", i1);
@@ -235,7 +146,6 @@ char* decode(struct vec* v) {
       encoded[i * 4 + j] = multiplied[i][j];
     }
   }
-  //
   for (size_t i = 0; i < 4; i++) {
     for (size_t j = 0; j < 5; j++) {
       encoded[i * 5 + j];
@@ -272,22 +182,16 @@ size_t number(size_t* binary) {
     return 1;
 }
 
-void print_string(char* s) {
-  for (size_t i = 0; i < 4; i++) {
-    printf("%c", *(s + i));
-  }
-  printf("\n\n");
-}
-
 int main() {
   system("chcp 1251");
+  srand(clock());
   abc_init();
   char* word = "òîìà";
   size_t* encoded = encoding(word);
 
   print_str(encoded, 35);
   printf("\n");
-  encoded = /*typo(typo(typo(*/typo(encoded)/*)))*/;
+  encoded = typo(typo(typo(encoded)));
 
   print_str(encoded, 35);
   printf("\n");
@@ -323,7 +227,6 @@ int main() {
   for (size_t i = 0; i < 5; i++) {
     *(decipher + i) = nonsquare_matr_mul_vec(&H, vectors + i);
   }
-
 
   for (size_t i = 0; i < 5; i++) {
     size_t typo = number(decipher[i].v);

@@ -18,5 +18,13 @@
     <ClCompile Include="src\Task3.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\structs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\headers\structs.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
