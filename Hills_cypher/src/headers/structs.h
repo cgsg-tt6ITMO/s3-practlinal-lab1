@@ -10,11 +10,13 @@
 
 extern char abc[];
 
+// вектор длины n
 struct vec {
   size_t n;
   size_t* v;
 };
 
+// квадратная матрица n * n
 struct square_matrix {
   size_t n;
   size_t** arr;

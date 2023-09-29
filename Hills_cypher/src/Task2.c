@@ -1,5 +1,6 @@
 #include "headers/hill.h"
 
+// проверяет, равны ли векторы
 size_t equal_vec(struct vec cyph, struct vec orig) {
   if (cyph.n != orig.n) return 0;
   for (size_t i = 0; i < cyph.n; i++) {
@@ -8,6 +9,7 @@ size_t equal_vec(struct vec cyph, struct vec orig) {
   return 1;
 }
 
+// создаёт матрицу-ключ 2х2, обратную к которой хотим "угадать"
 struct square_matrix matr_gen() {
   struct square_matrix
     m = matr2x2((size_t[2][2]) {
@@ -16,6 +18,7 @@ struct square_matrix matr_gen() {
   return m;
 }
 
+// перебором находит матрицу
 struct square_matrix hack_key_dumb_edition(struct vec* cyph, struct vec* orig) {
   size_t flag = 1;
   for (size_t i1 = 0; i1 < abc_len; i1++) {
@@ -23,6 +26,7 @@ struct square_matrix hack_key_dumb_edition(struct vec* cyph, struct vec* orig) {
       for (size_t i3 = 0; i3 < abc_len; i3++) {
         for (size_t i4 = 0; i4 < abc_len; i4++) {
           flag = 1;
+          // перебираем все пары векторов
           struct square_matrix mbres = matr2x2((size_t[2][2]) { {i1, i2}, { i3, i4 } });
           for (size_t i5 = 0; i5 < message_len / 2; i5++) {
             struct vec mul = matr_mul_vec(&mbres, (cyph + i5));
@@ -39,14 +43,18 @@ struct square_matrix hack_key_dumb_edition(struct vec* cyph, struct vec* orig) {
 }
 
 int main() {
+  // кодировка
   system("chcp 1251");
   size_t vec_size = 2;
+  // дана первая расшифровка, найти вторую
   char* s1 = "недвенадцать",
     *s2 = "троицкаятома";
   struct square_matrix m = matr_gen();
+  // даны два зашифрованных сообщения
   char* c1 = cypher(&m, s1),
     *c2 = cypher(&m, s2);
 
+  // расшифровка и зашифровка первого сообщения в удобном виде
   struct vec* cyf1 = vectors(s1, vec_size, message_len / vec_size),
     * decyf1 = vectors(c1, vec_size, message_len / vec_size);
 

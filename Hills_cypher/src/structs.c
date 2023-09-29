@@ -2,14 +2,17 @@
 
 char abc[] = "абвгдежзийклмнопрстуфхцчшыьэю€";
 
+// выводит в консоль число типа size_t
 void print(size_t s) {
   printf("%zu ", s);
 }
 
+// выводит в консоль число типа int64_t
 void print_int64_t(int64_t s) {
   printf("%" PRId64 " ", s);
 }
 
+// выводит в консоль строку длины 12
 void print_string(char* s) {
   for (size_t i = 0; i < message_len; i++) {
     printf("%c", *(s + i));
@@ -17,6 +20,7 @@ void print_string(char* s) {
   printf("\n\n");
 }
 
+// выводит в консоль координаты вектора
 void print_vec(struct vec* v) {
   for (size_t i = 0; i < v->n; i++) {
     printf("%zu ", *(v->v + i));
@@ -24,6 +28,7 @@ void print_vec(struct vec* v) {
   printf("\n");
 }
 
+// выводит в консоль матрицу
 void print_matr(struct square_matrix* M) {
   size_t** arr = M->arr;
   size_t n = M->n;
@@ -33,6 +38,7 @@ void print_matr(struct square_matrix* M) {
   printf("\n");
 }
 
+// создаЄт двойной указатель по двумерному массиву и оборачивает в структуру
 struct square_matrix matr2x2(size_t arr[2][2]) {
   size_t n = 2;
   size_t** res = (size_t**)malloc(n * sizeof(size_t*));
@@ -46,6 +52,7 @@ struct square_matrix matr2x2(size_t arr[2][2]) {
   return (struct square_matrix) { n, res };
 }
 
+// создаЄт двойной указатель по двумерному массиву и оборачивает в структуру
 struct square_matrix matr3x3(size_t arr[3][3]) {
   size_t n = 3;
   size_t** res = (size_t**)malloc(n * sizeof(size_t*));
@@ -59,6 +66,7 @@ struct square_matrix matr3x3(size_t arr[3][3]) {
   return (struct square_matrix) { n, res };
 }
 
+// создаЄт двойной указатель по двумерному массиву и оборачивает в структуру
 struct square_matrix matr4x4(size_t arr[4][4]) {
   size_t n = 4;
   size_t** res = (size_t**)malloc(n * sizeof(size_t*));
@@ -72,8 +80,10 @@ struct square_matrix matr4x4(size_t arr[4][4]) {
   return (struct square_matrix) { n, res };
 }
 
+// умножает квадратную матрицу на вектор
 struct vec matr_mul_vec(struct square_matrix *M, struct vec *V) {
   size_t n = V->n;
+  // валидаци€ размеров
   if (M->n != n) {
     printf("Ё“” ћј“–»÷” » ¬≈ “ќ– Ќ≈Ћ№«я ѕ≈–≈ћЌќ∆ј“№\n");
     printf("matr %zu vec %zu\n", M->n, n);
@@ -91,6 +101,7 @@ struct vec matr_mul_vec(struct square_matrix *M, struct vec *V) {
   return (struct vec) { n, res };
 }
 
+// возвращает минор матрицы по заданным индексам
 struct square_matrix minor(struct square_matrix *M, size_t x, size_t y) {
   size_t** a = M->arr;
   size_t n = M->n;
@@ -114,11 +125,13 @@ struct square_matrix minor(struct square_matrix *M, size_t x, size_t y) {
   return (struct square_matrix) { n - 1, res };
 }
 
+// определитель матрицы 2х2
 int64_t det2x2(struct square_matrix *M) {
   size_t** a = M->arr;
   return (int64_t)a[0][0] * a[1][1] - a[0][1] * a[1][0];
 }
 
+// определитель матрицы 3х3
 int64_t det3x3(struct square_matrix *M) {
   size_t** a = M->arr;
   return (int64_t)a[0][0] * a[1][1] * a[2][2]
@@ -129,6 +142,7 @@ int64_t det3x3(struct square_matrix *M) {
     - a[0][0] * a[1][2] * a[2][1];
 }
 
+// определитель матрицы 4х4, посчитанный через разложение по первой строке
 int64_t det4x4(struct square_matrix* M) {
   size_t** a = M->arr;
   size_t n = 4;
@@ -141,6 +155,7 @@ int64_t det4x4(struct square_matrix* M) {
   return res;
 }
 
+// определитель матриц от 1х1 до 4х4
 int64_t det(struct square_matrix* M) {
   if (M->n == 1) return (M->arr)[0][0];
   if (M->n == 2) return det2x2(M);
@@ -150,6 +165,7 @@ int64_t det(struct square_matrix* M) {
   return -1;
 }
 
+// транспонирует квадратный двумерный массив размера n
 int64_t** transpose(int64_t** arr, size_t n) {
   int64_t** res = (int64_t**)malloc(n * sizeof(int64_t*));
   for (size_t i = 0; i < n; i++)
@@ -162,12 +178,14 @@ int64_t** transpose(int64_t** arr, size_t n) {
   return res;
 }
 
+// возвращает число по модулю, friendly к отрицательным числам
 int64_t mod_abc_len(int64_t a) {
   if (a >= 0) return a % abc_len;
   while (a < 0) a += abc_len;
   return a % abc_len;
 }
 
+// возвращает число, обратное по модулю размера алфавита
 int64_t inv_mod(int64_t a) {
   for (size_t i = 0; i < abc_len; i++) {
     if (mod_abc_len(a * i) == 1)
@@ -176,6 +194,7 @@ int64_t inv_mod(int64_t a) {
   return -1;
 }
 
+// обращает матрицу (используетс€ дл€ дешифровки)
 struct square_matrix invert(struct square_matrix* M) {
   size_t n = M->n;
   int64_t** res = (int64_t**)malloc(n * sizeof(int64_t*)), coef;

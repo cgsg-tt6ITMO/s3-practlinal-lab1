@@ -15,13 +15,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="hill\structs.c">
+    <ClCompile Include="src\structs.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="hill\Task1.c">
+    <ClCompile Include="src\Task1.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="hill\Task2.c">
+    <ClCompile Include="src\Task2.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -31,6 +31,12 @@
     </ClInclude>
     <ClInclude Include="hill\headers\structs.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\headers\hill.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\headers\structs.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

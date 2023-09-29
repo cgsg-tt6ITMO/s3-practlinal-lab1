@@ -1,11 +1,13 @@
 #include "headers/structs.h"
 
+// возвращает букву по номеру
 char get_letter(size_t s) {
   if (s >= 0 && s < abc_len)
     return abc[s];
   return -1;
 }
 
+// возвращает номер буквы в заданном алфавите
 size_t get_number(char letter) {
   for (size_t i = 0; i < 30; i++) {
     if (letter == abc[i]) {
@@ -16,6 +18,7 @@ size_t get_number(char letter) {
   return -1;
 }
 
+// перевести массив векторов в массив букв
 char* nums_to_string(struct vec* vectors, size_t vec_size, size_t num_of_vec) {
   char* res = (char*)malloc(vec_size * sizeof(char));
   for (size_t i = 0; i < num_of_vec; i++) {
@@ -39,6 +42,7 @@ struct vec* vectors(char* s, size_t vec_size, size_t num_of_vec) {
   return vectors;
 }
 
+// зашифровывает слово методом Хилла по заданной матрице-ключу
 char* cypher(struct square_matrix *m, char* s) {
   size_t vec_size = m->n, num_of_vec = message_len / vec_size;
   struct vec* vecs = vectors(s, vec_size, num_of_vec);
@@ -49,11 +53,13 @@ char* cypher(struct square_matrix *m, char* s) {
   return nums_to_string(multipied, vec_size, num_of_vec);
 }
 
+// обращает матрицу-ключ и дешифрует сообщение
 char* decypher(struct square_matrix *m, char* cyphr) {
   struct square_matrix inv = invert(m);
   return cypher(&inv, cyphr);
 }
 
+// добавить 3 опечатки в сообщение
 char* tree_typos(char* message) {
   size_t i1 = rand() % message_len, i2 = rand() % (message_len - i1 - 1), i3 = i2 + rand() % (message_len - i2);
   *(message + i1) = get_letter(rand() % abc_len);
@@ -63,7 +69,9 @@ char* tree_typos(char* message) {
 }
 
 int main1() {
+  // кодировка
   system("chcp 1251");
+  // кодируемое слово
   char* secret = "великийаллах";
 
   size_t a3[3][3] = {
@@ -88,16 +96,16 @@ int main1() {
     *c2 = cypher(&m2, secret),
     *c3 = cypher(&m3, secret),
     *c4 = cypher(&m4, secret);
-
+  // добавить по 3 опечатки в каждое сообщение
   char
     *t2 = tree_typos(c2),
     *t3 = tree_typos(c3),
     *t4 = tree_typos(c4);
- 
+  // напечатать строки с опечатками
   print_string(c2);
   print_string(c3);
   print_string(c4);
-
+  // напечатать результат дешифровки строк с опечатками
   printf("дешифровка:\n");
   print_string(decypher(&m2, c2));
   print_string(decypher(&m3, c3));

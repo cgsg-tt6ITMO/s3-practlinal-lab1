@@ -2,6 +2,7 @@
 
 struct map* abc;
 
+// создать массив пар ключ-значение для буквы и её двоичного кода
 void abc_init(void) {
   abc = (struct map*)malloc(abc_size * sizeof(struct map));
   size_t i = 0;
@@ -39,6 +40,7 @@ void abc_init(void) {
   abc[i++] = map("11111", 'я');
 }
 
+// получить двоичный код из 5 символов для буквы
 size_t* get_letter_code(char letter) {
   for (size_t i = 0; i < abc_size; i++) {
     if (abc[i].letter == letter) {
@@ -49,6 +51,7 @@ size_t* get_letter_code(char letter) {
   return NULL;
 }
 
+// получить букву из массива 5 двоичных символов
 char get_letter(size_t* code) {
   for (size_t i = 0; i < abc_size; i++) {
     if (equals(code, abc[i].code))
@@ -58,6 +61,7 @@ char get_letter(size_t* code) {
   return 0;
 }
 
+// функция для упрощённого задания вектора
 struct vec* vecs(size_t* s, size_t vec_size, size_t num_of_vec) {
   struct vec* vectors = (struct vec*)malloc(num_of_vec * sizeof(struct vec));
   for (size_t i = 0; i < num_of_vec; i++) {
@@ -70,6 +74,7 @@ struct vec* vecs(size_t* s, size_t vec_size, size_t num_of_vec) {
   return vectors;
 }
 
+// по заданному массиву двоичных символов возвращает тот же массив с 1 опечаткой
 size_t* typo(size_t* message) {
   size_t message_len = 35;
   size_t i1 = rand() % message_len;
@@ -78,9 +83,10 @@ size_t* typo(size_t* message) {
   return message;
 }
 
+// кодирует слово из четырёх букв, возвращает строку из 35 двоичных символов
 size_t* encoding(char* word) {
   size_t mes_len = 4;
-  // массив из чисел
+  // массив из чисел из букв
   size_t* nums = (size_t*)malloc(sizeof(size_t) * mes_len * code_len);
   for (size_t i = 0; i < mes_len; i++) {
     size_t* tmp = get_letter_code(word[i]);
@@ -88,8 +94,9 @@ size_t* encoding(char* word) {
       nums[code_len * i + j] = tmp[j];
     }
   }
-  // разбиваем на вектора длины 4
+  // разбиваем на векторы длины 4
   struct vec* orig_vecs = vecs(nums, 4, 5);
+  // задаём матрицу G
   size_t matr_G[7][4] = {
     {1, 1, 0, 1},
     {1, 0, 1, 1},
@@ -99,6 +106,7 @@ size_t* encoding(char* word) {
     {0, 0, 1, 0},
     {0, 0, 0, 1}
   };
+  // выделяем память, превращаем массив в двойной указатель, присываиваем адреса
   size_t** G = (size_t**)malloc(7 * sizeof(size_t*));
   for (size_t i = 0; i < 7; i++)
     G[i] = (size_t*)malloc(4 * sizeof(size_t));
@@ -107,19 +115,21 @@ size_t* encoding(char* word) {
       G[i][j] = matr_G[i][j];
     }
   }
+  // оборачиваем двойной указатель в структуру
   struct matrix key = (struct matrix){ 7, 4, G };
-  // умножаем матрицу на вектора и получаем вектора длины 7
+  // умножаем матрицу на векторы длины 4 и получаем векторы длины 7
   struct vec* multiplied = (struct vec*)malloc(5 * sizeof(struct vec));
   for (size_t i = 0; i < 5; i++) {
     *(multiplied + i) = nonsquare_matr_mul_vec(&key, orig_vecs + i);
   }
+  // печатаем исходные и закодированные векторы
   printf("vec:\n");
   for (size_t i = 0; i < 5; i++) {
     print_vec(&orig_vecs[i]);
     print_vec(&multiplied[i]);
   }
   printf("\n");
-  // склеить в один массив
+  // склеиваем векторы в один массив из 35 двоичных символов
   size_t* encoded = (size_t*)malloc(35 * sizeof(size_t));
   for (size_t i = 0; i < 5; i++) {
     for (size_t j = 0; j < 7; j++) {
@@ -127,11 +137,11 @@ size_t* encoding(char* word) {
     }
   }
   return encoded;
-
 }
 
+// массив векторов длины 7 превращает в слово
 char* decode(struct vec* v) {
-
+  // выбираем все не проверочные биты
   size_t multiplied[5][4];
   for (size_t i = 0; i < 5; i++) {
     multiplied[i][0] = v[i].v[2];
@@ -139,7 +149,7 @@ char* decode(struct vec* v) {
     multiplied[i][2] = v[i].v[5];
     multiplied[i][3] = v[i].v[6];
   }
-
+  // склеиваем 5 массивов длины 4
   size_t* encoded = (size_t*)malloc(20 * sizeof(size_t));
   for (size_t i = 0; i < 5; i++) {
     for (size_t j = 0; j < 4; j++) {
@@ -163,6 +173,7 @@ char* decode(struct vec* v) {
   return res;
 }
 
+// перевести трёхзначный двоичный код, записанный задом наперёд, в число
 size_t number(size_t* binary) {
   if (binary[0] == 0 && binary[1] == 0 && binary[2] == 0)
     return 0;
@@ -238,8 +249,7 @@ int main() {
     }
   }
 
-  print_string(
-    decode(vectors));
+  print_string(decode(vectors));
 
   return 0;
 }
