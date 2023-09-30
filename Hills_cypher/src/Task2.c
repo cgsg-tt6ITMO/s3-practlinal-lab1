@@ -51,8 +51,8 @@ int main2() {
     *s2 = "троицкаятома";
   struct square_matrix m = matr_gen();
   // даны два зашифрованных сообщения
-  char* c1 = cypher(&m, s1),
-    *c2 = cypher(&m, s2);
+  char* c1 = cipher(&m, s1),
+    *c2 = cipher(&m, s2);
 
   // расшифровка и зашифровка первого сообщения в удобном виде
   struct vec* cyf1 = vectors(s1, vec_size, message_len / vec_size),
@@ -60,6 +60,6 @@ int main2() {
 
   struct square_matrix inv = hack_key_dumb_edition(decyf1, cyf1);
   print_matr(&inv);
-  print_string(cypher(&inv, c2));
+  print_string(cipher(&inv, c2));
   return 0;
 }

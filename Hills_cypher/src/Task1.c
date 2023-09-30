@@ -1,4 +1,5 @@
 #include "headers/structs.h"
+#include <time.h>
 
 // возвращает букву по номеру
 char get_letter(size_t s) {
@@ -43,7 +44,7 @@ struct vec* vectors(char* s, size_t vec_size, size_t num_of_vec) {
 }
 
 // зашифровывает слово методом Хилла по заданной матрице-ключу
-char* cypher(struct square_matrix *m, char* s) {
+char* cipher(struct square_matrix *m, char* s) {
   size_t vec_size = m->n, num_of_vec = message_len / vec_size;
   struct vec* vecs = vectors(s, vec_size, num_of_vec);
   struct vec* multipied = (struct vec*)malloc(num_of_vec * sizeof(struct vec));
@@ -54,26 +55,29 @@ char* cypher(struct square_matrix *m, char* s) {
 }
 
 // обращает матрицу-ключ и дешифрует сообщение
-char* decypher(struct square_matrix *m, char* cyphr) {
+char* decipher(struct square_matrix *m, char* ciphr) {
   struct square_matrix inv = invert(m);
-  return cypher(&inv, cyphr);
+  return cipher(&inv, ciphr);
 }
 
 // добавить 3 опечатки в сообщение
-char* tree_typos(char* message) {
-  size_t i1 = rand() % message_len, i2 = rand() % (message_len - i1 - 1), i3 = i2 + rand() % (message_len - i2);
+void tree_typos(char* message) {
+  size_t
+    i1 = rand() % message_len,
+    i2 = rand() % message_len,
+    i3 = rand() % message_len;
   *(message + i1) = get_letter(rand() % abc_len);
   *(message + i2) = get_letter(rand() % abc_len);
   *(message + i3) = get_letter(rand() % abc_len);
-  return message;
 }
 
 int main() {
   // кодировка
   system("chcp 1251");
+  srand(clock());
   // шифруемое сообщение
   char* secret = "великийаллах";
-
+  // матрицы-ключи
   size_t a3[3][3] = {
     {1,0,0},
     {4,7,0},
@@ -85,31 +89,28 @@ int main() {
     {-1, 0, 13, 0},
     {8, 21, 1, 29}
   };
-
   struct square_matrix
     m2 = matr2x2((size_t[2][2]) { {29, 0}, {20, 1} }),
     m3 = matr3x3(a3),
     m4 = matr4x4(a4);
-
   // зашифровать тремя разными матрицами
-  char 
-    *c2 = cypher(&m2, secret),
-    *c3 = cypher(&m3, secret),
-    *c4 = cypher(&m4, secret);
+  char *c2 = cipher(&m2, secret),
+    *c3 = cipher(&m3, secret),
+    *c4 = cipher(&m4, secret);
   // добавить по 3 опечатки в каждое сообщение
-  char
-    *t2 = tree_typos(c2),
-    *t3 = tree_typos(c3),
-    *t4 = tree_typos(c4);
+  tree_typos(c2);
+  tree_typos(c3);
+  tree_typos(c4);
   // напечатать зашифрованные строки с опечатками
-  print_string(t2);
-  print_string(t3);
-  print_string(t4);
+  printf("шифры (с опечатками):\n");
+  print_string(c2);
+  print_string(c3);
+  print_string(c4);
   // напечатать результат дешифровки строк с опечатками
   printf("дешифровка:\n");
-  print_string(decypher(&m2, t2));
-  print_string(decypher(&m3, t3));
-  print_string(decypher(&m4, t4));
+  print_string(decipher(&m2, c2));
+  print_string(decipher(&m3, c3));
+  print_string(decipher(&m4, c4));
 
   return 0;
 }
