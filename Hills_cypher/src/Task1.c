@@ -68,10 +68,10 @@ char* tree_typos(char* message) {
   return message;
 }
 
-int main1() {
+int main() {
   // кодировка
   system("chcp 1251");
-  // кодируемое слово
+  // шифруемое сообщение
   char* secret = "великийаллах";
 
   size_t a3[3][3] = {
@@ -91,7 +91,7 @@ int main1() {
     m3 = matr3x3(a3),
     m4 = matr4x4(a4);
 
-  // зашифровать три раза тремя путями
+  // зашифровать тремя разными матрицами
   char 
     *c2 = cypher(&m2, secret),
     *c3 = cypher(&m3, secret),
@@ -101,15 +101,15 @@ int main1() {
     *t2 = tree_typos(c2),
     *t3 = tree_typos(c3),
     *t4 = tree_typos(c4);
-  // напечатать строки с опечатками
-  print_string(c2);
-  print_string(c3);
-  print_string(c4);
+  // напечатать зашифрованные строки с опечатками
+  print_string(t2);
+  print_string(t3);
+  print_string(t4);
   // напечатать результат дешифровки строк с опечатками
   printf("дешифровка:\n");
-  print_string(decypher(&m2, c2));
-  print_string(decypher(&m3, c3));
-  print_string(decypher(&m4, c4));
+  print_string(decypher(&m2, t2));
+  print_string(decypher(&m3, t3));
+  print_string(decypher(&m4, t4));
 
   return 0;
 }
