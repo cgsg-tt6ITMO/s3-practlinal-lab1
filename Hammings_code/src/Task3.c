@@ -61,7 +61,7 @@ char get_letter(size_t* code) {
   return 0;
 }
 
-// функция для упрощённого задания вектора
+// функция для упрощённого задания массива векторов
 struct vec* vecs(size_t* s, size_t vec_size, size_t num_of_vec) {
   struct vec* vectors = (struct vec*)malloc(num_of_vec * sizeof(struct vec));
   for (size_t i = 0; i < num_of_vec; i++) {
@@ -139,8 +139,9 @@ size_t* encoding(char* word) {
   return encoded;
 }
 
-// массив векторов длины 7 превращает в слово
-char* decode(struct vec* v) {
+// 35 двоичных символов превращает в слово длины 4
+char* decode(size_t* encoded) {
+  struct vec* v = check_parity_bits(encoded);
   // выбираем все не проверочные биты
   size_t multiplied[5][4];
   for (size_t i = 0; i < 5; i++) {
@@ -193,20 +194,9 @@ size_t number(size_t* binary) {
     return 1;
 }
 
-int main() {
-  system("chcp 1251");
-  srand(clock());
-  abc_init();
-  char* word = "тома";
-  size_t* encoded = encoding(word);
-
-  print_str(encoded, 35);
-  printf("\n");
-  encoded = typo(typo(typo(encoded)));
-
-  print_str(encoded, 35);
-  printf("\n");
-  // проверка кодов
+// проверяет, есть ли опечатки. возвращает векторы без опечаток
+struct vec* check_parity_bits(size_t* encoded) {
+  // матрица, показывающая, за какие биты отвечает какой бит чётности
   size_t matr_H[3][7] = {
     {1, 0, 1, 0, 1, 0, 1},
     {0, 1, 1, 0, 0, 1, 1},
@@ -222,7 +212,7 @@ int main() {
   }
   struct matrix H = (struct matrix){ 3, 7, h };
 
-  size_t num_of_vec = 5 , vec_size = 7;
+  size_t num_of_vec = 5, vec_size = 7;
   // если умножить проверочную матрицу на векторы, должны в идеале получиться все нули
   struct vec* decipher = (struct vec*)malloc(num_of_vec * sizeof(struct vec));
   // надо сначала разбить encoded на векторы длины 7
@@ -234,22 +224,38 @@ int main() {
     }
     *(vectors + i) = (struct vec){ vec_size, tmp };
   }
-  
+  // умножает векторы на проверочную матрицу, получая массив индексов ошибки
+  // (в обратном порядке записанные 3 двоичных символа)
   for (size_t i = 0; i < 5; i++) {
     *(decipher + i) = nonsquare_matr_mul_vec(&H, vectors + i);
   }
-
   for (size_t i = 0; i < 5; i++) {
     size_t typo = number(decipher[i].v);
     print_vec(&decipher[i]);
+    // если есть ошибка, прибавляет 1 и берёт по модулю 2 (1->0, 0->1)
     if (typo != 0) {
       vectors[i].v[typo - 1] += 1;
       vectors[i].v[typo - 1] %= 2;
-      //printf("typo: %zu\n", typo - 1);
     }
   }
+  return vectors;
+}
 
-  print_string(decode(vectors));
+int main() {
+  system("chcp 1251");
+  srand(clock());
+  abc_init();
+  char* word = "тома";
+  // кодирует слово
+  size_t* encoded = encoding(word);
+  print_str(encoded, 35);
+  printf("\n");
+  // добавляет 3 опечатки
+  encoded = typo(typo(typo(encoded)));
+  print_str(encoded, 35);
+  printf("\n");
+  // печатает результат декодирования
+  print_string(decode(encoded));
 
   return 0;
 }
