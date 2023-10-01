@@ -71,7 +71,7 @@ void tree_typos(char* message) {
   *(message + i3) = get_letter(rand() % abc_len);
 }
 
-int main() {
+int main1() {
   // кодировка
   system("chcp 1251");
   srand(clock());

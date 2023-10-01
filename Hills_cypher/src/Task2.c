@@ -42,7 +42,7 @@ struct square_matrix hack_key_dumb_edition(struct vec* cyph, struct vec* orig) {
   return (struct square_matrix) { 0, NULL };
 }
 
-int main2() {
+int main() {
   // кодировка
   system("chcp 1251");
   size_t vec_size = 2;

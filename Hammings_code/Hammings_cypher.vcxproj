@@ -24,6 +24,7 @@
     <ProjectGuid>{0c0f6da5-21e8-4f7b-a9e3-3923280c0ea3}</ProjectGuid>
     <RootNamespace>Hammingscypher</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>Hammings_code</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
