@@ -74,10 +74,14 @@ struct vec* vecs(size_t* s, size_t vec_size, size_t num_of_vec) {
   return vectors;
 }
 
+int i = 3;
+int j = 8;
 // по заданному массиву двоичных символов возвращает тот же массив с 1 опечаткой
 size_t* typo(size_t* message) {
   size_t message_len = 35;
-  size_t i1 = rand() % message_len;
+  size_t i1 = i;
+  i += j;
+  j -= 1;
   printf("typo index: %zu\n", i1);
   message[i1] = (message[i1] + 1) % 2;
   return message;
@@ -137,41 +141,6 @@ size_t* encoding(char* word) {
     }
   }
   return encoded;
-}
-
-// 35 двоичных символов превращает в слово длины 4
-char* decode(size_t* encoded) {
-  struct vec* v = check_parity_bits(encoded);
-  // выбираем все не проверочные биты
-  size_t multiplied[5][4];
-  for (size_t i = 0; i < 5; i++) {
-    multiplied[i][0] = v[i].v[2];
-    multiplied[i][1] = v[i].v[4];
-    multiplied[i][2] = v[i].v[5];
-    multiplied[i][3] = v[i].v[6];
-  }
-  // склеиваем 5 массивов длины 4
-  size_t* encoded = (size_t*)malloc(20 * sizeof(size_t));
-  for (size_t i = 0; i < 5; i++) {
-    for (size_t j = 0; j < 4; j++) {
-      encoded[i * 4 + j] = multiplied[i][j];
-    }
-  }
-  for (size_t i = 0; i < 4; i++) {
-    for (size_t j = 0; j < 5; j++) {
-      encoded[i * 5 + j];
-    }
-  }
-  // разбить на 4 буквы
-  char* res = (char*)malloc(4 * sizeof(char));
-  for (size_t i = 0; i < 4; i++) {
-    size_t* tmp = (size_t*)malloc(5 * sizeof(size_t));
-    for (size_t j = 0; j < 5; j++) {
-      tmp[j] = encoded[i * 5 + j];
-    }
-    res[i] = get_letter(tmp);
-  }
-  return res;
 }
 
 // перевести трёхзначный двоичный код, записанный задом наперёд, в число
@@ -241,6 +210,42 @@ struct vec* check_parity_bits(size_t* encoded) {
   return vectors;
 }
 
+
+// 35 двоичных символов превращает в слово длины 4
+char* decode(size_t* enc) {
+  struct vec* v = check_parity_bits(enc);
+  // выбираем все не проверочные биты
+  size_t multiplied[5][4];
+  for (size_t i = 0; i < 5; i++) {
+    multiplied[i][0] = v[i].v[2];
+    multiplied[i][1] = v[i].v[4];
+    multiplied[i][2] = v[i].v[5];
+    multiplied[i][3] = v[i].v[6];
+  }
+  // склеиваем 5 массивов длины 4
+  size_t* encoded = (size_t*)malloc(20 * sizeof(size_t));
+  for (size_t i = 0; i < 5; i++) {
+    for (size_t j = 0; j < 4; j++) {
+      encoded[i * 4 + j] = multiplied[i][j];
+    }
+  }
+  for (size_t i = 0; i < 4; i++) {
+    for (size_t j = 0; j < 5; j++) {
+      encoded[i * 5 + j];
+    }
+  }
+  // разбить на 4 буквы
+  char* res = (char*)malloc(4 * sizeof(char));
+  for (size_t i = 0; i < 4; i++) {
+    size_t* tmp = (size_t*)malloc(5 * sizeof(size_t));
+    for (size_t j = 0; j < 5; j++) {
+      tmp[j] = encoded[i * 5 + j];
+    }
+    res[i] = get_letter(tmp);
+  }
+  return res;
+}
+
 int main() {
   system("chcp 1251");
   srand(clock());
@@ -251,7 +256,7 @@ int main() {
   print_str(encoded, 35);
   printf("\n");
   // добавляет 3 опечатки
-  encoded = typo(typo(typo(encoded)));
+  encoded = typo(typo(typo(typo(encoded))));
   print_str(encoded, 35);
   printf("\n");
   // печатает результат декодирования
